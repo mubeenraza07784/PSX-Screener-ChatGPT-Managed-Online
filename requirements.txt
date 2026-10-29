@@ -1,0 +1,4 @@
+playwright>=1.40
+# The engine (engine/*.py) and report scripts use only the Python standard library (Python 3.9+).
+# Playwright is needed only to collect fresh data: after installing, run  python -m playwright install chromium
+streamlit>=1.44,<2

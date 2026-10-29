@@ -1,0 +1,10 @@
+.browser-profile/
+__pycache__/
+workdir/data.json
+workdir/ds/
+workdir/summary.txt
+workdir/tech_new.txt
+workdir/fund_new.txt
+workdir/today.json
+workdir/ticks.json
+reports/*.log

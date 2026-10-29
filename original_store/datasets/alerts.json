@@ -1,0 +1,15 @@
+{
+  "description": "Daily signal changes found by the weekday monitor: breakouts triggered, stops/targets hit, new strong candidates, new setups, score changes and Strategy 1–5 list changes. Newest first.",
+  "schedule": "Every weekday after the PSX close (scheduled task)",
+  "source": {
+    "kind": "file",
+    "name": "alerts.json",
+    "url": "/_blob/6aafddd9116687e3f745bfb4d722a7ce"
+  },
+  "staleAfterHours": 96,
+  "title": "Monitor alerts",
+  "updated": {
+    "at": "2026-10-29T07:06:00Z",
+    "by": "PSX monitor"
+  }
+}

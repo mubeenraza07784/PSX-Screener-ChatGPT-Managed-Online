@@ -1,0 +1,14 @@
+{
+  "description": "The rule each strategy applies: Week 12 Strategies deck, technical course, and the recorded sessions (Strategies 7–9 and the holdings check), as applied to this data.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "strategy_rules.json",
+    "url": "/_blob/aedba8cdbf10c80d7355268f832f6327"
+  },
+  "title": "Strategy rules",
+  "updated": {
+    "at": "2026-10-29T07:06:00Z",
+    "by": "PSX monitor"
+  }
+}

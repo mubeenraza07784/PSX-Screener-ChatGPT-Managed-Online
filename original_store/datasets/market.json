@@ -1,0 +1,15 @@
+{
+  "description": "Universe counts, KSE-100 median P/E, breadth and model assumptions (T-bill hurdle, discount rate) as of the latest refresh.",
+  "schedule": "Every weekday after the PSX close (scheduled task)",
+  "source": {
+    "kind": "file",
+    "name": "market.json",
+    "url": "/_blob/db07e28e1527068b082e08d5321c37d0"
+  },
+  "staleAfterHours": 96,
+  "title": "Market summary",
+  "updated": {
+    "at": "2026-10-29T07:06:00Z",
+    "by": "PSX monitor"
+  }
+}

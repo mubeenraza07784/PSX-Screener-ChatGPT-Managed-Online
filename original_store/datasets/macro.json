@@ -1,0 +1,15 @@
+{
+  "description": "Latest SBP rate, inflation, T-bills, current account, reserves, PKR, oil and KSE-100 from news and SBP/PBS releases, late Oct 2026.",
+  "schedule": "Every Monday (scheduled task)",
+  "source": {
+    "kind": "file",
+    "name": "macro.json",
+    "url": "/_blob/43f9dbe97886da7024df49060f9c0abf"
+  },
+  "staleAfterHours": 240,
+  "title": "Pakistan economy readings",
+  "updated": {
+    "at": "2026-10-28T07:30:00Z",
+    "by": "Claude"
+  }
+}

@@ -1,0 +1,16 @@
+CHATGPT-MANAGED PSX SCREENER — PRIVATE ONLINE EDITION
+
+STATUS: Deployable package, NOT YET LIVE ON A PUBLIC INTERNET URL.
+
+YOUR FIRST ACTION:
+1) Extract this ZIP.
+2) Open docs/ONLINE_DEPLOYMENT.md.
+3) Publish this source to a PRIVATE GitHub repository.
+4) Connect that repository to ChatGPT and to Streamlit Community Cloud.
+5) Deploy streamlit_app.py with PRIVATE app visibility.
+6) Ask ChatGPT to inspect or update the GitHub repository. Code updates can then
+   be delivered through GitHub without re-uploading ZIPs.
+
+Current source snapshot: 28 October 2026, not a real-time quote feed.
+Daily market updates: optional GitHub Actions workflow, requires validation.
+No trades, messages, or account actions are performed automatically.

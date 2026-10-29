@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSX strategy screener</title>
+<link rel="stylesheet" href="theme.css">
+<script src="vendor/d3.v7.9.0.min.js"></script>
+<script src="data.js"></script>
+<script src="dash-shim.js"></script>
+</head>
+<body>
+<div class="export-banner">PSX strategy screener · standalone export · data as of 2026-10-28 · signals apply the course rules mechanically; not investment advice</div>
+<div id="dash-root">
+
+<style>
+#dash-root { --dash-gutter: var(--cds-pad-lg); }
+.px { font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.px h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+.px h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.px h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-md) 0 var(--cds-gap-xs); }
+.px p { margin: 0 0 var(--cds-gap-sm); }
+.px .muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.px .lede { color: var(--color-fg-muted); max-width: 60rem; }
+.px b { font-weight: 600; }
+.px-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); margin: var(--cds-gap-md) 0; border-bottom: 1px solid var(--color-border-line); }
+.px-tab { background: none; border: none; border-bottom: 2px solid transparent; padding: var(--cds-pad-sm) var(--cds-pad-md); color: var(--color-fg-muted); font: inherit; cursor: pointer; }
+.px-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); }
+.px-grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.px-tiles { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); margin-bottom: var(--cds-gap-md); }
+.px-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+.px-tile .v { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.px-tile .l { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.px-chart { position: relative; min-height: 360px; }
+.px-chart.short { min-height: 200px; }
+.px-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+.px-tip .t { color: var(--cds-text-secondary); }
+.px-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; margin-bottom: var(--cds-gap-sm); }
+.px-filters input[type=search], .px-filters select, .px-sel, .px-num { font: inherit; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
+.px-filters label { font-size: var(--cds-font-size-caption); display: inline-flex; gap: 4px; align-items: center; }
+.px-tablebox { max-height: 70vh; overflow: auto; }
+.px table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.px th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; cursor: pointer; z-index: 1; }
+.px td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.px td.num, .px th.num { text-align: right; }
+.px tbody tr[data-key] { cursor: pointer; }
+.px tbody tr[data-key]:hover { background: var(--color-bg); }
+.px .chip { display: inline-block; padding: 0 6px; border-radius: var(--cds-radius); font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); }
+.px .good { color: var(--color-ok); }
+.px .avg { color: var(--color-warn); }
+.px .bad { color: var(--color-bad); }
+.px .wrapcell { white-space: normal; min-width: 12rem; }
+.px-kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--cds-gap-sm); }
+.px-kv div span { display: block; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.px-kv div b { font-variant-numeric: tabular-nums; }
+.px-bar { height: 8px; background: var(--color-border-line); border-radius: 4px; overflow: hidden; }
+.px-bar i { display: block; height: 100%; background: var(--cds-chart-muted); }
+.px-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.px-legend span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; background: var(--sw); }
+.px-fail { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); min-height: inherit; }
+.px-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+.px ul { margin: 0 0 var(--cds-gap-sm); padding-left: 1.2rem; }
+.px li { margin-bottom: 4px; }
+</style>
+
+<div class="px">
+  <h1 id="top">PSX strategy screener</h1>
+  <p class="lede">Every company with data on the Pakistan Stock Exchange, scored on your course's 33-ratio model, tested against your Week 12 strategies, and read through trend, moving averages, RSI, MACD, support/resistance, Fibonacci and candlestick signals. Prices as of <b data-draw="asof" data-source="market" data-field="as_of" data-row="0">—</b>.</p>
+  <p>Of <b data-draw="nAnalysed" data-source="market" data-field="analysed" data-row="0">—</b> companies analysed, <b data-draw="nStrong" data-source="market" data-field="strong_candidates" data-row="0">—</b> pass both the fundamental model (≥60%) and the chart test (≥60%); another <b data-draw="nWait" data-source="market" data-field="strong_wait" data-row="0">—</b> are fundamentally strong but still in falling charts. With the SBP hiking and inflation above target, the course's Red-zone rules apply: favour banks, energy, fertilizer, power and chemicals, and size positions small.</p>
+
+  <nav class="px-tabs" role="tablist">
+    <button class="px-tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button class="px-tab" role="tab" data-tab="screener" aria-selected="false">Screener</button>
+    <button class="px-tab" role="tab" data-tab="alerts" aria-selected="false">Alerts</button>
+    <button class="px-tab" role="tab" data-tab="strategies" aria-selected="false">Strategies &amp; holdings</button>
+    <button class="px-tab" role="tab" data-tab="detail" aria-selected="false">Company checklist</button>
+    <button class="px-tab" role="tab" data-tab="economy" aria-selected="false">Economy checklist</button>
+    <button class="px-tab" role="tab" data-tab="method" aria-selected="false">Method</button>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="px-sec">
+    <div class="px-tiles">
+      <div class="px-card px-tile"><div class="v" data-draw="tAnalysed" data-source="market" data-field="analysed" data-row="0">—</div><div class="l">Companies analysed (price + financials)</div></div>
+      <div class="px-card px-tile"><div class="v" data-draw="tRated" data-source="market" data-field="rated_liquid" data-row="0">—</div><div class="l">Liquid, with fresh financials (strategy universe)</div></div>
+      <div class="px-card px-tile"><div class="v" data-draw="tPE" data-source="market" data-field="kse100_median_pe" data-row="0">—</div><div class="l">KSE-100 median P/E</div></div>
+      <div class="px-card px-tile"><div class="v"><span data-draw="tEY" data-source="market" data-field="kse100_earnings_yield" data-row="0">—</span>%</div><div class="l">Market earnings yield vs <span data-draw="tTB" data-source="market" data-field="tbill" data-row="0">—</span>% T-bill</div></div>
+      <div class="px-card px-tile"><div class="v"><span data-draw="t200" data-source="market" data-field="pct_above_200dma" data-row="0">—</span>%</div><div class="l">Stocks above their 200-day average</div></div>
+      <div class="px-card px-tile"><div class="v bad">Red</div><div class="l">Interest-rate zone (course Week 3/12)</div></div>
+    </div>
+
+    <div class="px-grid">
+      <div class="px-card" id="map">
+        <h2>Fundamentals vs technicals</h2>
+        <p class="muted">Each dot is a company. Right = stronger 33-ratio score; up = stronger chart. The top-right box (both ≥60) holds the strong candidates. Click a dot for its checklist.</p>
+        <div class="px-legend">
+          <span style="--sw: var(--color-ok)">Strong candidate</span>
+          <span style="--sw: #3b82f6">Strong fundamentals – wait</span>
+          <span style="--sw: #a855f7">Momentum only</span>
+          <span style="--sw: var(--cds-chart-muted)">Watch</span>
+          <span style="--sw: var(--color-bad)">Avoid</span>
+        </div>
+        <div class="px-chart" data-draw="scatter" data-source="stocks"></div>
+      </div>
+      <div class="px-card" id="sectors">
+        <h2>Sectors by average fundamental score</h2>
+        <p class="muted">Average 33-ratio score of companies in each sector (sectors with 2+ companies). Darker bars are the course's Red-zone sectors.</p>
+        <div class="px-chart" data-draw="sectorChart" data-source="sectors"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENER -->
+  <section id="screener" class="px-sec" hidden>
+    <div class="px-card">
+      <h2>All companies</h2>
+      <p class="muted">Click a column to sort, a row to open its checklist. Fund = 33-ratio score; Tech = chart score; MOS = margin of safety against intrinsic value (FCF method).</p>
+      <div class="px-filters">
+        <input type="search" class="px-q" placeholder="Search symbol or name" aria-label="Search">
+        <select class="px-fsector" aria-label="Sector" data-draw="sectorSelect" data-source="stocks"></select>
+        <select class="px-fsignal" aria-label="Signal">
+          <option value="">All signals</option>
+          <option>Strong candidate</option>
+          <option>Strong fundamentals – wait for setup</option>
+          <option>Momentum only</option>
+          <option>Watch</option>
+          <option>Avoid</option>
+          <option>No fundamentals</option>
+        </select>
+        <select class="px-fsetup" aria-label="Setup">
+          <option value="">All setups</option>
+          <option>CWT trend buy-stop</option>
+          <option>Continuation buy-stop</option>
+          <option>Reversal buy-stop</option>
+          <option>CWT early reversal buy-stop</option>
+          <option>Divergence reversal buy-stop</option>
+          <option>CWT pullback buy-limit</option>
+          <option>Uptrend – wait for candles above Lips</option>
+          <option>Extended – wait for pullback</option>
+          <option>Alligator sleeping – no trade</option>
+          <option>Neutral</option>
+          <option>Downtrend – avoid</option>
+          <option>No recent trading</option>
+        </select>
+        <label><input type="checkbox" class="px-fk100"> KSE-100</label>
+        <label><input type="checkbox" class="px-fsh"> Shariah</label>
+        <label><input type="checkbox" class="px-fliq"> Liquid only</label>
+      </div>
+      <p class="muted"><span data-draw="screenCount">—</span></p>
+      <div class="px-tablebox">
+        <table class="px-screen" data-source="stocks" data-row-key="sym">
+          <thead><tr>
+            <th data-field="sym" data-sort="sym">Symbol</th>
+            <th data-field="name" data-sort="name">Company</th>
+            <th data-field="sector" data-sort="sector">Sector</th>
+            <th class="num" data-field="price" data-sort="price">Price</th>
+            <th class="num" data-field="fund_score" data-sort="fund_score" aria-sort="descending">Fund</th>
+            <th class="num" data-field="tech_score" data-sort="tech_score">Tech</th>
+            <th data-field="signal" data-sort="signal">Signal</th>
+            <th data-field="setup" data-sort="setup">Setup</th>
+            <th class="num" data-field="pe" data-sort="pe">P/E</th>
+            <th class="num" data-field="dy" data-sort="dy">Div %</th>
+            <th class="num" data-field="roe" data-sort="roe">ROE %</th>
+            <th class="num" data-field="mos_fcf" data-sort="mos_fcf">MOS %</th>
+            <th class="num" data-field="rsi" data-sort="rsi">RSI</th>
+            <th data-field="trend" data-sort="trend">Trend</th>
+            <th class="num" data-field="ret_3m" data-sort="ret_3m">3M %</th>
+          </tr></thead>
+          <tbody data-draw="screenerBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRATEGIES -->
+  <section id="strategies" class="px-sec" hidden>
+    <p class="lede">Your Week 12 strategies applied to today's data. Strategies 1, 2, 4 and 5 use only liquid companies (PKR 2bn+ market cap, PKR 5m+ traded a day) with financials no older than June 2025. Strategy 6 comes from your technical course (CWT, Weeks 4–8). Strategies 7 and 8 come from Sir Ammar's recorded sessions (Sarmaaya's aggressive rank, and sector growth leaders). Strategy 9 and the holdings check come from Sir Faraz's recorded sessions (score above 70, and the bear-market portfolio review). Entry, stop and target come from the course setup (buy-stop above the breakout, stop below the Jaw or pattern low, target at 1:3); a blank means the chart gives no setup yet.</p>
+    <div class="px-card" id="s1" style="margin-bottom: var(--cds-gap-md)">
+      <h2>Strategy 1 · Top 10% by scoring model</h2>
+      <p class="muted" data-draw="rule-S1" data-source="strategy_rules" data-field="rule" data-where="strategy=S1">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="iv_fcf">IV (FCF)</th><th class="num" data-field="mos_fcf">MOS %</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th><th class="num" data-field="reward_risk">R:R</th>
+      </tr></thead><tbody data-draw="strat-S1"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s2" style="margin-bottom: var(--cds-gap-md)">
+      <h2>Strategy 2 · Red-zone sectors</h2>
+      <p class="muted" data-draw="rule-S2" data-source="strategy_rules" data-field="rule" data-where="strategy=S2">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="iv_fcf">IV (FCF)</th><th class="num" data-field="mos_fcf">MOS %</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th><th class="num" data-field="reward_risk">R:R</th>
+      </tr></thead><tbody data-draw="strat-S2"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s3" style="margin-bottom: var(--cds-gap-md)">
+      <h2>Strategy 3 · Lowest price, high beta</h2>
+      <p class="muted" data-draw="rule-S3" data-source="strategy_rules" data-field="rule" data-where="strategy=S3">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="beta">Beta</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th><th class="num" data-field="reward_risk">R:R</th>
+      </tr></thead><tbody data-draw="strat-S3"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s4" style="margin-bottom: var(--cds-gap-md)">
+      <h2>Strategy 4 · Score + intrinsic value (FCF)</h2>
+      <p class="muted" data-draw="rule-S4" data-source="strategy_rules" data-field="rule" data-where="strategy=S4">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="iv_fcf">IV (FCF)</th><th class="num" data-field="mos_fcf">MOS %</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th><th class="num" data-field="reward_risk">R:R</th>
+      </tr></thead><tbody data-draw="strat-S4"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s5" style="margin-bottom: var(--cds-gap-md)">
+      <h2>Strategy 5 · Score + intrinsic value (cash)</h2>
+      <p class="muted" data-draw="rule-S5" data-source="strategy_rules" data-field="rule" data-where="strategy=S5">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="iv_cash">IV (cash)</th><th class="num" data-field="mos_cash">MOS %</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th><th class="num" data-field="reward_risk">R:R</th>
+      </tr></thead><tbody data-draw="strat-S5"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s6">
+      <h2>Strategy 6 · Technical course (CWT)</h2>
+      <p class="muted" data-draw="rule-S6" data-source="strategy_rules" data-field="rule" data-where="strategy=S6">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="fund_score">Fund</th><th data-field="alligator_daily">Alligator</th><th data-field="setup">Setup</th><th data-field="chart_patterns">Patterns</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target 1:3</th><th class="num" data-field="qty_for_risk">Shares (1% risk)</th>
+      </tr></thead><tbody data-draw="strat-S6"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s7" style="margin-top: var(--cds-gap-md)">
+      <h2>Strategy 7 · Aggressive rank (Sarmaaya method)</h2>
+      <p class="muted" data-draw="rule-S7" data-source="strategy_rules" data-field="rule" data-where="strategy=S7">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="aggressive_rank">Aggr. rank</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="np_g">Profit growth %</th><th class="num" data-field="sales_g">Sales growth %</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="eps_rank">EPS rank</th><th class="num" data-field="revenue_rank">Revenue rank</th><th class="num" data-field="score_rank">Score rank</th><th class="num" data-field="tech_score">Tech</th><th data-field="setup">Setup</th>
+      </tr></thead><tbody data-draw="strat-S7"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s8" style="margin-top: var(--cds-gap-md)">
+      <h2>Strategy 8 · Sector growth leaders</h2>
+      <p class="muted" data-draw="rule-S8" data-source="strategy_rules" data-field="rule" data-where="strategy=S8">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="np_g">Profit growth %</th><th class="num" data-field="sector_median_np_g">Sector median %</th><th class="num" data-field="sales_g">Sales growth %</th><th class="num" data-field="peg">PEG</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="aggressive_rank">Aggr. rank</th><th class="num" data-field="tech_score">Tech</th><th data-field="setup">Setup</th>
+      </tr></thead><tbody data-draw="strat-S8"></tbody></table></div>
+    </div>
+    <div class="px-card" id="s9" style="margin-top: var(--cds-gap-md)">
+      <h2>Strategy 9 · Score 70+</h2>
+      <p class="muted" data-draw="rule-S9" data-source="strategy_rules" data-field="rule" data-where="strategy=S9">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="rank">#</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="fund_score">Fund</th><th class="num" data-field="tech_score">Tech</th><th class="num" data-field="iv_fcf">IV (FCF)</th><th class="num" data-field="mos_fcf">MOS %</th><th data-field="setup">Setup</th><th class="num" data-field="entry">Entry</th><th class="num" data-field="stop">Stop</th><th class="num" data-field="target">Target</th>
+      </tr></thead><tbody data-draw="strat-S9"></tbody></table></div>
+    </div>
+    <div class="px-card" id="sh" style="margin-top: var(--cds-gap-md)">
+      <h2>Your holdings check</h2>
+      <p class="muted" data-draw="rule-SH" data-source="strategy_rules" data-field="rule" data-where="strategy=SH">—</p>
+      <div class="px-tablebox"><table data-source="strategies" data-row-key="pick_id"><thead><tr>
+        <th data-field="group">Group</th><th data-field="sym">Symbol</th><th data-field="sector">Sector</th><th class="num" data-field="price">Price</th><th class="num" data-field="iv">Intrinsic value</th><th class="num" data-field="mos">MOS %</th><th class="num" data-field="fund_score">Score</th><th data-field="review">Check</th><th data-field="setup">Chart setup</th>
+      </tr></thead><tbody data-draw="strat-SH"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- DETAIL -->
+  <section id="detail" class="px-sec" hidden>
+    <div class="px-filters">
+      <label>Company <select class="px-sel" data-draw="symSelect" data-source="stocks" aria-label="Company"></select></label>
+    </div>
+    <div data-draw="detail" data-source="stocks"></div>
+    <div class="px-card" id="sizer" style="margin-top: var(--cds-gap-md)">
+      <h2>Position sizer</h2>
+      <p class="muted">From your course's position-sizing rule: risk a fixed share of the account between entry and stop.</p>
+      <div class="px-filters">
+        <label>Account (PKR) <input type="number" class="px-num px-acct" min="0" step="10000" value="1000000"></label>
+        <label>Risk per trade (%) <input type="number" class="px-num px-risk" min="0.1" max="10" step="0.1" value="1"></label>
+      </div>
+      <div data-draw="sizer" data-source="stocks"></div>
+    </div>
+  </section>
+
+  <!-- ALERTS -->
+  <section id="alerts" class="px-sec" hidden>
+    <div class="px-card">
+      <h2>Monitor alerts</h2>
+      <p class="muted">Checked every weekday after the PSX close. Data as of <b data-draw="alAsOf" data-source="market" data-field="as_of" data-row="0">—</b>. Alerts compare each close with the previous day's trade plan and signals: a breakout above its buy-stop, a stop or target hit, a new strong candidate, a new chart setup on a company scoring 55%+, a big score change after new financials, and changes to the Strategy 1–5 lists. Click a row for the company's checklist.</p>
+      <div class="px-filters">
+        <select class="px-atype" aria-label="Alert type">
+          <option value="">All alerts</option>
+          <option>Breakout triggered</option>
+          <option>Stop hit</option>
+          <option>Target hit</option>
+          <option>New strong candidate</option>
+          <option>Lost strong status</option>
+          <option>New setup</option>
+          <option>Score change</option>
+        </select>
+      </div>
+      <div class="px-tablebox">
+        <table class="px-alerts" data-source="alerts" data-row-key="alert_id"><thead><tr>
+          <th data-field="date">Date</th><th data-field="sym">Symbol</th><th data-field="name">Company</th><th data-field="type">Alert</th><th data-field="detail">Detail</th><th class="num" data-field="price">Close</th>
+        </tr></thead><tbody data-draw="alertsBody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ECONOMY -->
+  <section id="economy" class="px-sec" hidden>
+    <div class="px-grid">
+      <div class="px-card" id="macro">
+        <h2>Pakistan profile – the six factors and more</h2>
+        <p class="muted">Latest readings as of late October 2026, with their likely effect on equities (course checklist 1–4).</p>
+        <div class="px-tablebox">
+          <table data-source="macro" data-row-key="indicator"><thead><tr>
+            <th data-field="indicator">Indicator</th><th data-field="latest">Latest</th><th data-field="change">Change</th><th data-field="impact">Impact</th><th data-field="note">What it means</th><th data-field="source">Source</th>
+          </tr></thead><tbody data-draw="macroBody"></tbody></table>
+        </div>
+      </div>
+      <div class="px-card" id="zone">
+        <h2>Where we are in the rate cycle</h2>
+        <p>The SBP has just raised rates with inflation above its 5–7% band. In the course's colour scheme that is the <b class="bad">Red</b> zone: equities face a higher hurdle, so the course tilts allocation away from stocks and, within stocks, toward banks, energy, fertilizer, power and chemicals (Strategy 2).</p>
+        <h3>Course allocation by zone</h3>
+        <table><thead><tr><th>Zone</th><th class="num">Bonds</th><th class="num">Stocks</th><th class="num">Gold</th><th>Risk profile</th></tr></thead><tbody data-draw="alloc"></tbody></table>
+        <h3>Market valuation check (checklist 4)</h3>
+        <p>KSE-100 median P/E of <b data-draw="mPE" data-source="market" data-field="kse100_median_pe" data-row="0">—</b> gives an earnings yield of <b data-draw="mEY" data-source="market" data-field="kse100_earnings_yield" data-row="0">—</b>% against a <b data-draw="mTB" data-source="market" data-field="tbill" data-row="0">—</b>% T-bill: a gap of <b data-draw="mGap" data-source="market" data-field="ey_minus_tbill" data-row="0">—</b> points in favour of stocks, so the market is still cheap even after the hike. Breadth is weak: <b data-draw="mUp" data-source="market" data-field="pct_uptrend" data-row="0">—</b>% of stocks are in uptrends and <b data-draw="mOS" data-source="market" data-field="rsi_oversold" data-row="0">—</b> are oversold (RSI under 30).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method" class="px-sec" hidden>
+    <div class="px-grid">
+      <div class="px-card">
+        <h2>How each part works</h2>
+        <h3>Fundamental score</h3>
+        <p>Each of the 33 criteria from your Financial Ratio Summary scores Good = 2, Average = 1, Bad = 0, over the latest five fiscal years plus trailing twelve months. The score is points earned out of points possible, pulled a little toward 50% when few criteria can be measured, so banks and insurers (where debt, inventory and cash-flow ratios do not apply) are not over-rewarded.</p>
+        <h3>Intrinsic value</h3>
+        <p>DCF on EPS and on free cash flow per share: five years at the company's EPS growth (capped at 15%), then <b data-draw="mG" data-source="market" data-field="terminal_growth" data-row="0">—</b>% forever, discounted at <b data-draw="mR" data-source="market" data-field="discount_rate" data-row="0">—</b>% (T-bill plus 5% equity premium). Peter Lynch value = EPS × (growth + dividend yield), capped at a P/E of 25. IV (FCF) is the median of DCF-FCF, DCF-EPS and Lynch; IV (cash) uses DCF-EPS plus net cash per share. Treat these as a ranking tool, not a price target.</p>
+        <h3>Technical score and setups</h3>
+        <ul>
+          <li><b>Trend</b>: swing highs and lows over a year (higher highs and lows = Up); a * means the trend is read from the 50/200-day averages instead.</li>
+          <li><b>Chart score</b>: price above 20/50/200-day averages, 50 above 200, uptrend, MACD above signal, RSI 45–70, a bullish candle and a positive 3-month return add points; downtrend, RSI over 75, a bearish candle and a fresh bearish MACD cross take points away.</li>
+          <li><b>Alligator (Week 4)</b>: Jaw = 13-day smoothed average shifted 8 days, Teeth = 8 shifted 5, Lips = 5 shifted 3. The mouth is open when Lips, Teeth and Jaw stay in order and apart for the last 3 days; otherwise it is sleeping (no trade).</li>
+          <li><b>CWT Scenario 1</b>: open, parallel Alligator and Heikin-Ashi candles above the Lips – buy-stop above the last swing high, stop below the Jaw. <b>Scenario 2</b>: mouth pointing down but price closes above the Jaw – buy-stop above the last lower high, stop below the fractal low.</li>
+          <li><b>Timeframes (Week 6, stocks)</b>: the Daily chart is the analysis timeframe and the 4-hour chart is for execution. This screener reads the Daily chart (free sources give no 4-hour PSX data), so confirm the entry on your 4-hour chart. The weekly Alligator is shown for information. A pullback into a bullish <b>fair value gap</b> above the Jaw gives a buy-limit instead.</li>
+          <li><b>Reversals (Week 7)</b>: double bottom/top, head &amp; shoulders and inverse, rising/falling wedge, and RSI divergence (first swing below 30 or above 70). Entry on the break of the neckline or last lower high.</li>
+          <li><b>Continuations (Week 8)</b>: bull/bear flag, cup &amp; handle and inverted, ascending/descending/symmetrical triangle, ascending/descending channel, and support↔resistance flips. Pattern projection is shown separately; the target rides to 1:3 reward:risk. A plan whose buy-stop is more than 10% above the close, or whose risk is over 15%, is marked “Extended – wait for pullback”.</li>
+          <li><b>Market filter</b>: Alligator on an equal-weight KSE-100 proxy; the course takes buy setups only when the index is bullish on the daily chart.</li>
+          <li><b>Risk (RRMS)</b>: shares sized so a stop-out costs 1% of the capital set for you; the course's recovery ladder (0.15% → 0.35% → 0.70% → 1.5%) applies to intraday forex/crypto rather than this daily stock screen.</li>
+          <li><b>Candles</b> checked on the last three sessions: doji, hammer, hanging man, shooting star, inverted hammer, engulfing, harami, morning/evening star, marubozu.</li>
+        </ul>
+        <h3>Data and gaps</h3>
+        <p class="muted">Prices and financials from stockanalysis.com (S&P Global data) and the PSX data portal, read through your Chrome on 28 Oct 2026. PSX lists <b data-draw="mPSX" data-source="market" data-field="psx_symbols" data-row="0">—</b> symbols; rights, funds, preference shares and dormant names have no data and are left out, as are 34 small caps the source stopped serving (a second pass recovered 26 more). Technical rules follow your Sarmaaya technical course, Weeks 4, 6, 7 and 8 (read from the copies on your computer). Weeks 5, 10, 11 and 12 are too large for Drive to preview; until they are read, candles and Fibonacci use the standard definitions. Prices are end-of-day: a move made today shows after the evening refresh.</p>
+      </div>
+      <div class="px-card">
+        <h2>The 33 criteria</h2>
+        <p class="muted">From your file "Financial_Ratio_Summary – All Criteria".</p>
+        <div class="px-tablebox">
+          <table data-source="criteria" data-row-key="no"><thead><tr>
+            <th data-field="no">#</th><th data-field="category">Category</th><th data-field="indicator">Indicator</th><th data-field="good">Good when</th><th data-field="applies_to_financials">Banks/insurers</th>
+          </tr></thead><tbody data-draw="critBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top: var(--cds-gap-md)">This screener applies your course's rules mechanically. It is not investment advice; check each company's latest results and announcements before trading.</p>
+  </section>
+</div>
+
+<script>(function(){
+
+window.PX = window.PX || { sort: { key: 'fund_score', dir: -1 }, sym: 'OGDC', q: '', sector: '', signal: '', setup: '', k100: false, sh: false, liq: false };
+const PX = window.PX;
+const f2 = d3.format(',.2f'), f1 = d3.format(',.1f'), f0 = d3.format(',.0f');
+PX.fmtP = (v) => v == null ? '' : (Math.abs(v) >= 1000 ? f0(v) : f2(v));
+PX.fmt1 = (v) => v == null ? '' : f1(v);
+PX.fmt0 = (v) => v == null ? '' : f0(v);
+PX.cls = (sig) => ({ 'Strong candidate': 'good', 'Avoid': 'bad', 'Momentum only': 'avg' })[sig] || '';
+PX.color = (sig) => ({ 'Strong candidate': getComputedStyle(document.documentElement).getPropertyValue('--color-ok') || '#16a34a', 'Strong fundamentals – wait for setup': '#3b82f6', 'Momentum only': '#a855f7', 'Avoid': getComputedStyle(document.documentElement).getPropertyValue('--color-bad') || '#dc2626' })[sig] || null;
+PX.fail = (el, st) => { el.replaceChildren(); if (st === 'error' || st === 'connect') { const d = document.createElement('div'); d.className = 'px-fail'; d.textContent = 'Failed to load'; el.append(d); } };
+
+// Tabs
+const showTab = (name) => {
+  document.querySelectorAll('.px-sec').forEach((s) => { s.hidden = s.id !== name; });
+  document.querySelectorAll('.px-tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+  dash.setLink(name);
+};
+PX.showTab = showTab;
+document.querySelectorAll('.px-tab').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+PX.open = (sym) => { PX.sym = sym; showTab('detail'); dash.draw('symSelect'); dash.draw('detail'); dash.draw('sizer'); };
+const hash = location.hash.slice(1);
+if (hash && document.getElementById(hash) && document.getElementById(hash).classList.contains('px-sec')) showTab(hash);
+
+})();</script>
+
+<script>(function(){
+
+// Simple single-value drawings from the market row
+const PX = window.PX;
+const one = (name, field, fmt) => dash.draw(name, (el) => {
+  const m = dash.data('market');
+  if (m.status !== 'ok' || !m.data.length) { el.textContent = '—'; return; }
+  const v = m.data[0][field];
+  el.textContent = fmt ? fmt(v) : String(v);
+});
+const num = (v) => d3.format(',')(v);
+const dec = (v) => d3.format('.1f')(v);
+one('asof', 'as_of', (v) => d3.utcFormat('%-d %b %Y')(new Date(v)));
+one('nAnalysed', 'analysed', num); one('nStrong', 'strong_candidates', num); one('nWait', 'strong_wait', num);
+one('tAnalysed', 'analysed', num); one('tRated', 'rated_liquid', num); one('tPE', 'kse100_median_pe', d3.format('.2f'));
+one('tEY', 'kse100_earnings_yield', dec); one('tTB', 'tbill', dec); one('t200', 'pct_above_200dma', num);
+one('mPE', 'kse100_median_pe', d3.format('.2f')); one('mEY', 'kse100_earnings_yield', dec); one('mTB', 'tbill', dec);
+one('mGap', 'ey_minus_tbill', dec); one('mUp', 'pct_uptrend', num); one('mOS', 'rsi_oversold', num);
+one('mG', 'terminal_growth', dec); one('mR', 'discount_rate', dec); one('mPSX', 'psx_symbols', num);
+
+})();</script>
+
+<script>(function(){
+
+// Scatter: fundamentals vs technicals
+const PX = window.PX;
+const CUT = 60; // course-style threshold used to define "strong"
+dash.draw('scatter', (el) => {
+  const ds = dash.data('stocks');
+  if (ds.status !== 'ok') { PX.fail(el, ds.status); return; }
+  const rows = ds.data.filter((r) => r.fund_score != null && r.tech_score != null);
+  el.replaceChildren();
+  const W = el.clientWidth || 600, H = 360, m = { t: 10, r: 12, b: 36, l: 40 };
+  const x = d3.scaleLinear([20, 90], [m.l, W - m.r]).clamp(true);
+  const y = d3.scaleLinear([0, 100], [H - m.b, m.t]);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+  svg.append('rect').attr('x', x(CUT)).attr('y', y(100)).attr('width', x(90) - x(CUT)).attr('height', y(CUT) - y(100)).style('fill', 'var(--color-ok)').attr('opacity', 0.06);
+  const gx = svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 90))));
+  const gy = svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
+  [gx, gy].forEach((g) => { g.attr('font-size', null).attr('font-family', null); g.selectAll('text').style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)'); g.selectAll('line,path').style('stroke', 'var(--cds-chart-axis)'); });
+  svg.append('line').attr('x1', x(CUT)).attr('x2', x(CUT)).attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
+  svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(CUT)).attr('y2', y(CUT)).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
+  svg.append('text').attr('x', W - m.r).attr('y', H - 4).attr('text-anchor', 'end').style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text('Fundamental score →');
+  svg.append('text').attr('x', m.l + 4).attr('y', m.t + 10).style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text('↑ Technical score');
+  const tip = d3.select(el).append('div').attr('class', 'px-tip').style('display', 'none');
+  svg.append('g').selectAll('circle').data(rows).join('circle')
+    .attr('cx', (d) => x(d.fund_score)).attr('cy', (d) => y(d.tech_score) + (Math.random() - 0.5) * 3)
+    .attr('r', (d) => d.kse100 === 'Yes' ? 4.5 : 3)
+    .style('fill', (d) => PX.color(d.signal) || 'var(--cds-chart-muted)').attr('opacity', 0.8).style('cursor', 'pointer')
+    .on('mousemove', (ev, d) => {
+      const [px, py] = d3.pointer(ev, el);
+      tip.style('display', null).style('left', Math.min(px + 12, W - 180) + 'px').style('top', (py - 10) + 'px');
+      tip.replaceChildren();
+      tip.append('div').attr('class', 't').text(d.sym + ' · ' + d.sector);
+      tip.append('div').text('Fund ' + d.fund_score + ' · Tech ' + d.tech_score);
+      tip.append('div').text(d.signal);
+    })
+    .on('mouseleave', () => tip.style('display', 'none'))
+    .on('click', (ev, d) => PX.open(d.sym));
+});
+
+// Sector bars
+dash.draw('sectorChart', (el) => {
+  const ds = dash.data('sectors');
+  if (ds.status !== 'ok') { PX.fail(el, ds.status); return; }
+  const rows = ds.data.slice().sort((a, b) => b.avg_fund_score - a.avg_fund_score);
+  el.replaceChildren();
+  const W = el.clientWidth || 600, bh = 16, gap = 6, H = rows.length * (bh + gap) + 24;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)');
+  let lw = 0; rows.forEach((r) => { probe.text(r.sector); lw = Math.max(lw, probe.node().getComputedTextLength()); }); probe.remove();
+  const x = d3.scaleLinear([0, 100], [lw + 12, W - 40]);
+  const tip = d3.select(el).append('div').attr('class', 'px-tip').style('display', 'none');
+  const g = svg.selectAll('g.row').data(rows).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap)})`);
+  g.append('text').attr('x', lw + 4).attr('y', bh - 4).attr('text-anchor', 'end').style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text((d) => d.sector);
+  g.append('rect').attr('x', x(0)).attr('y', 0).attr('height', bh).attr('rx', 3).attr('width', (d) => x(d.avg_fund_score) - x(0))
+    .style('fill', (d) => d.red_zone === 'Yes' ? dash.colors[0] : 'var(--cds-chart-muted)')
+    .on('mousemove', (ev, d) => { const [px, py] = d3.pointer(ev, el); tip.style('display', null).style('left', Math.min(px + 12, W - 200) + 'px').style('top', (py - 10) + 'px'); tip.replaceChildren(); tip.append('div').attr('class', 't').text(d.sector); tip.append('div').text('Avg fund ' + d.avg_fund_score + ' · avg tech ' + (d.avg_tech_score ?? '–')); tip.append('div').text(d.companies + ' companies · 3M median ' + (d.median_ret_3m ?? '–') + '%'); })
+    .on('mouseleave', () => tip.style('display', 'none'));
+  g.append('text').attr('x', (d) => x(d.avg_fund_score) + 4).attr('y', bh - 4).style('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').text((d) => d3.format('.0f')(d.avg_fund_score));
+});
+
+})();</script>
+
+<script>(function(){
+
+// Screener
+const PX = window.PX;
+const q = (s) => document.querySelectorAll(s);
+q('.px-q').forEach((i) => i.addEventListener('input', () => { PX.q = i.value.trim().toLowerCase(); dash.draw('screenerBody'); dash.draw('screenCount'); }));
+[['.px-fsector', 'sector'], ['.px-fsignal', 'signal'], ['.px-fsetup', 'setup']].forEach(([s, k]) => q(s).forEach((e) => e.addEventListener('change', () => { PX[k] = e.value; dash.draw('screenerBody'); dash.draw('screenCount'); })));
+[['.px-fk100', 'k100'], ['.px-fsh', 'sh'], ['.px-fliq', 'liq']].forEach(([s, k]) => q(s).forEach((e) => e.addEventListener('change', () => { PX[k] = e.checked; dash.draw('screenerBody'); dash.draw('screenCount'); })));
+q('.px-screen th[data-sort]').forEach((th) => th.addEventListener('click', () => {
+  const k = th.dataset.sort;
+  PX.sort = { key: k, dir: PX.sort.key === k ? -PX.sort.dir : (['sym', 'name', 'sector', 'signal', 'setup', 'trend'].includes(k) ? 1 : -1) };
+  q('.px-screen th[data-sort]').forEach((t) => t.setAttribute('aria-sort', t.dataset.sort === k ? (PX.sort.dir > 0 ? 'ascending' : 'descending') : 'none'));
+  dash.draw('screenerBody');
+}));
+q('.px-screen').forEach((t) => t.addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) PX.open(tr.dataset.key); }));
+
+PX.filtered = () => {
+  const ds = dash.data('stocks');
+  if (ds.status !== 'ok') return null;
+  let rows = ds.data.filter((r) =>
+    (!PX.q || r.sym.toLowerCase().includes(PX.q) || (r.name || '').toLowerCase().includes(PX.q)) &&
+    (!PX.sector || r.sector === PX.sector) && (!PX.signal || r.signal === PX.signal) && (!PX.setup || (r.setup || '').startsWith(PX.setup)) &&
+    (!PX.k100 || r.kse100 === 'Yes') && (!PX.sh || r.shariah === 'Yes') && (!PX.liq || r.liquid === 'Yes'));
+  const { key, dir } = PX.sort;
+  rows.sort((a, b) => { const x = a[key], y = b[key]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y))) * dir; });
+  return rows;
+};
+dash.draw('sectorSelect', (sel) => {
+  const ds = dash.data('stocks');
+  const secs = ds.status === 'ok' ? [...new Set(ds.data.map((r) => r.sector))].sort() : [];
+  sel.replaceChildren(new Option('All sectors', ''), ...secs.map((s) => new Option(s)));
+  sel.value = PX.sector;
+});
+dash.draw('screenCount', (el) => { const r = PX.filtered(); el.textContent = r ? `Showing ${r.length} companies` : '—'; });
+dash.draw('screenerBody', (tb) => {
+  const rows = PX.filtered();
+  tb.replaceChildren();
+  if (!rows) return;
+  const cols = [['sym'], ['name'], ['sector'], ['price', PX.fmtP], ['fund_score', PX.fmt1], ['tech_score', PX.fmt0], ['signal'], ['setup'], ['pe', PX.fmt1], ['dy', PX.fmt1], ['roe', PX.fmt1], ['mos_fcf', PX.fmt0], ['rsi', PX.fmt0], ['trend'], ['ret_3m', PX.fmt1]];
+  const frag = document.createDocumentFragment();
+  for (const r of rows) {
+    const tr = document.createElement('tr'); tr.dataset.key = r.sym;
+    for (const [k, f] of cols) {
+      const td = document.createElement('td');
+      const v = r[k];
+      td.textContent = f ? f(v) : (v ?? '');
+      if (f) td.className = 'num';
+      if (k === 'signal') td.className = PX.cls(v);
+      if (k === 'sym') td.style.fontWeight = '600';
+      tr.append(td);
+    }
+    frag.append(tr);
+  }
+  tb.append(frag);
+});
+
+})();</script>
+
+<script>(function(){
+
+// Strategies
+const PX = window.PX;
+['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'SH'].forEach((id) => {
+  dash.draw('rule-' + id, (el) => {
+    const ds = dash.data('strategy_rules');
+    const r = ds.status === 'ok' ? ds.data.find((x) => x.strategy === id) : null;
+    el.textContent = r ? r.rule : '—';
+  });
+  dash.draw('strat-' + id, (tb) => {
+    const ds = dash.data('strategies');
+    tb.replaceChildren();
+    if (ds.status !== 'ok') return;
+    const pct = d3.format(',.1f');
+    const cols = id === 'SH'
+      ? [['group'], ['sym'], ['sector'], ['price', PX.fmtP], ['iv', PX.fmtP], ['mos', PX.fmt0], ['fund_score', PX.fmt1], ['review'], ['setup']]
+      : id === 'S9'
+      ? [['rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['fund_score', PX.fmt1], ['tech_score', PX.fmt0], ['iv_fcf', PX.fmtP], ['mos_fcf', PX.fmt0], ['setup'], ['entry', PX.fmtP], ['stop', PX.fmtP], ['target', PX.fmtP]]
+      : id === 'S7'
+      ? [['aggressive_rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['np_g', pct], ['sales_g', pct], ['fund_score', PX.fmt1], ['eps_rank', d3.format('d')], ['revenue_rank', d3.format('d')], ['score_rank', d3.format('d')], ['tech_score', PX.fmt0], ['setup']]
+      : id === 'S8'
+      ? [['rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['np_g', pct], ['sector_median_np_g', pct], ['sales_g', pct], ['peg', d3.format('.2f')], ['fund_score', PX.fmt1], ['aggressive_rank', d3.format('d')], ['tech_score', PX.fmt0], ['setup']]
+      : id === 'S6'
+      ? [['rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['tech_score', PX.fmt0], ['fund_score', PX.fmt1], ['alligator_daily'], ['setup'], ['chart_patterns'], ['entry', PX.fmtP], ['stop', PX.fmtP], ['target', PX.fmtP], ['qty_for_risk', d3.format(',')]]
+      : id === 'S3'
+      ? [['rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['beta', d3.format('.2f')], ['fund_score', PX.fmt1], ['tech_score', PX.fmt0], ['setup'], ['entry', PX.fmtP], ['stop', PX.fmtP], ['target', PX.fmtP], ['reward_risk', d3.format('.2f')]]
+      : [['rank'], ['sym'], ['sector'], ['price', PX.fmtP], ['fund_score', PX.fmt1], ['tech_score', PX.fmt0], [id === 'S5' ? 'iv_cash' : 'iv_fcf', PX.fmtP], [id === 'S5' ? 'mos_cash' : 'mos_fcf', PX.fmt0], ['setup'], ['entry', PX.fmtP], ['stop', PX.fmtP], ['target', PX.fmtP], ['reward_risk', d3.format('.2f')]];
+    for (const r of ds.data.filter((x) => x.strategy === id).sort((a, b) => a.rank - b.rank)) {
+      const tr = document.createElement('tr'); tr.dataset.key = r.pick_id;
+      for (const [k, f] of cols) { const td = document.createElement('td'); const v = r[k]; td.textContent = v == null ? '' : (f ? f(v) : v); if (f) td.className = 'num'; if (k === 'sym') td.style.fontWeight = '600'; if (k === 'review') { td.style.color = v === 'OK' ? 'var(--color-ok)' : 'var(--color-bad)'; if (v !== 'OK') td.style.fontWeight = '600'; } tr.append(td); }
+      tr.addEventListener('click', () => PX.open(r.sym));
+      tb.append(tr);
+    }
+  });
+});
+
+})();</script>
+
+<script>(function(){
+
+// Company checklist
+const PX = window.PX;
+const CRIT = [
+  ['salesG', 'Growth', 'Sales growth'], ['opG', 'Growth', 'Operating profit growth'], ['npG', 'Growth', 'Net profit growth'], ['eps3v5', 'Growth', 'EPS 3y avg > 5y avg'],
+  ['pe', 'Valuation', 'P/E'], ['peg', 'Valuation', 'PEG'], ['ey', 'Valuation', 'Earnings yield vs T-bill'], ['pb', 'Valuation', 'P/B'], ['graham', 'Valuation', 'Graham P/E × P/B'], ['ps', 'Valuation', 'P/S'], ['dy', 'Valuation', 'Dividend yield'], ['evebitda', 'Valuation', 'EV/EBITDA'],
+  ['opM', 'Stability', 'Operating margin'], ['npM', 'Stability', 'Net margin'], ['taxR', 'Stability', 'Tax ratio'], ['intCov', 'Stability', 'Interest coverage'], ['de', 'Stability', 'Debt/Equity'], ['debt3v5', 'Stability', 'Total debt falling (3y<5y)'], ['cr', 'Stability', 'Current ratio'], ['cfo3v5', 'Stability', 'CFO rising (3y>5y)'], ['ncfPos', 'Stability', 'Net change in cash positive'], ['ccfo', 'Stability', 'Cumulative CFO > PAT'], ['fat3v5', 'Stability', 'Fixed-asset turnover rising'], ['roe', 'Stability', 'Return on equity'],
+  ['fcfps3v5', 'Free cash flow', 'FCF/share rising'], ['fcfSales', 'Free cash flow', 'FCF / sales'], ['fcfCfo3v5', 'Free cash flow', 'FCF/CFO rising'], ['croic', 'Free cash flow', 'Cash return on invested capital'],
+  ['invT3v5', 'Efficiency', 'Inventory turnover rising'], ['dso3v5', 'Efficiency', 'Days receivable falling'], ['dio3v5', 'Efficiency', 'Days inventory falling'], ['dpo3v5', 'Efficiency', 'Days payable rising'], ['ccc3v5', 'Efficiency', 'Cash conversion cycle falling']];
+const CATS = [['cat_growth', 'Growth'], ['cat_valuation', 'Valuation'], ['cat_stability', 'Stability'], ['cat_free_cash_flow', 'Free cash flow'], ['cat_efficiency', 'Efficiency']];
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const mark = (e, sym, field) => { e.dataset.source = 'stocks'; e.dataset.field = field; e.dataset.where = 'sym=' + encodeURIComponent(sym); return e; };
+
+dash.draw('symSelect', (sel) => {
+  const ds = dash.data('stocks');
+  const rows = ds.status === 'ok' ? ds.data.slice().sort((a, b) => a.sym.localeCompare(b.sym)) : [];
+  sel.replaceChildren(...rows.map((r) => new Option(r.sym + ' – ' + r.name, r.sym)));
+  sel.value = PX.sym;
+  sel.onchange = () => { PX.sym = sel.value; dash.draw('detail'); dash.draw('sizer'); };
+});
+
+dash.draw('detail', (el) => {
+  const ds = dash.data('stocks');
+  el.replaceChildren();
+  if (ds.status !== 'ok') { PX.fail(el, ds.status); return; }
+  const r = ds.data.find((x) => x.sym === PX.sym) || ds.data[0];
+  const S = r.sym;
+  const kv = (label, field, f, suffix) => { const d = mk('div'); d.append(mk('span', null, label)); const b = mark(mk('b', null, r[field] == null ? '' : (f ? f(r[field]) : r[field])), S, field); d.append(b); if (suffix && r[field] != null) d.append(document.createTextNode(suffix)); return d; };
+
+  // Header card
+  const head = mk('div', 'px-card');
+  const h = mk('h2'); h.append(mark(mk('span', null, r.sym), S, 'sym'), document.createTextNode(' · '), mark(mk('span', null, r.name), S, 'name')); head.append(h);
+  const sub = mk('p', 'muted'); sub.append(mark(mk('span', null, r.sector), S, 'sector'), document.createTextNode(' · KSE-100: '), mark(mk('span', null, r.kse100), S, 'kse100'), document.createTextNode(' · Shariah: '), mark(mk('span', null, r.shariah), S, 'shariah'), document.createTextNode(' · Latest financials: '), mark(mk('span', null, r.fiscal_year || 'n/a'), S, 'fiscal_year'));
+  head.append(sub);
+  const sig = mk('p'); sig.append(document.createTextNode('Signal: '), mark(mk('b', PX.cls(r.signal), r.signal), S, 'signal'), document.createTextNode('   ·   Chart setup: '), mark(mk('b', null, r.setup || 'n/a'), S, 'setup'));
+  head.append(sig);
+  const g = mk('div', 'px-kv');
+  g.append(kv('Price (PKR)', 'price', PX.fmtP), kv('Fundamental score', 'fund_score', PX.fmt1, '%'), kv('Technical score', 'tech_score', PX.fmt0, '%'), kv('Combined', 'combined', PX.fmt1),
+    kv('P/E', 'pe', PX.fmt1), kv('P/B', 'pb', d3.format('.2f')), kv('Dividend yield', 'dy', PX.fmt1, '%'), kv('ROE', 'roe', PX.fmt1, '%'), kv('Market cap (PKR bn)', 'mcap_bn', PX.fmt1), kv('Avg traded/day (PKR m)', 'traded_value_m', PX.fmt1));
+  head.append(g);
+  if (r.stale_financials === 'Yes') head.append(mk('p', 'bad', 'Financial statements are more than a year old – treat the score with caution.'));
+  el.append(head);
+
+  const grid = mk('div', 'px-grid'); grid.style.marginTop = 'var(--cds-gap-md)';
+  // Scorecard
+  const sc = mk('div', 'px-card');
+  sc.append(mk('h2', null, 'Fundamental checklist (33 criteria)'));
+  sc.append(mk('p', 'muted', 'Points: Good = 2, Average = 1, Bad = 0. Blank = not measurable for this company.'));
+  for (const [k, lab] of CATS) {
+    if (r[k] == null) continue;
+    const row = mk('div'); row.style.margin = '4px 0';
+    const t = mk('div', 'muted'); t.append(document.createTextNode(lab + ' '), mark(mk('b', null, PX.fmt0(r[k])), S, k), document.createTextNode('%'));
+    const bar = mk('div', 'px-bar'); const i = mk('i'); i.style.width = r[k] + '%'; i.style.background = r[k] >= 60 ? 'var(--color-ok)' : r[k] >= 40 ? 'var(--color-warn)' : 'var(--color-bad)'; bar.append(i);
+    row.append(t, bar); sc.append(row);
+  }
+  const tbx = mk('div', 'px-tablebox'); tbx.style.maxHeight = '420px';
+  const tbl = mk('table'); const th = mk('thead'); const hr = mk('tr'); ['Category', 'Criterion', 'Result', 'Points'].forEach((x) => hr.append(mk('th', null, x))); th.append(hr); tbl.append(th);
+  const tb = mk('tbody');
+  for (const [key, cat, lab] of CRIT) {
+    const v = r['s_' + key]; const tr = mk('tr');
+    tr.append(mk('td', 'muted', cat), mk('td', null, lab));
+    const res = v == null ? '–' : v === 2 ? 'Good' : v === 1 ? 'Average' : 'Bad';
+    tr.append(mk('td', v == null ? 'muted' : v === 2 ? 'good' : v === 1 ? 'avg' : 'bad', res));
+    const pt = mk('td', 'num'); pt.append(mark(mk('span', null, v == null ? '' : String(v)), S, 's_' + key)); tr.append(pt);
+    tb.append(tr);
+  }
+  tbl.append(tb); tbx.append(tbl); sc.append(tbx);
+  grid.append(sc);
+
+  // Valuation + technical
+  const right = mk('div'); right.style.display = 'grid'; right.style.gap = 'var(--cds-gap-md)';
+  const val = mk('div', 'px-card'); val.append(mk('h2', null, 'Valuation and intrinsic value'));
+  const vg = mk('div', 'px-kv');
+  vg.append(kv('EPS (TTM)', 'eps_ttm', d3.format('.2f')), kv('EPS growth (5y CAGR)', 'eps_cagr', PX.fmt1, '%'), kv('PEG', 'peg', d3.format('.2f')), kv('Earnings yield', 'earnings_yield', PX.fmt1, '%'),
+    kv('DCF on EPS', 'dcf_eps', PX.fmtP), kv('DCF on FCF', 'dcf_fcf', PX.fmtP), kv('Peter Lynch value', 'lynch', PX.fmtP), kv('Intrinsic value (FCF set)', 'iv_fcf', PX.fmtP),
+    kv('Margin of safety (FCF)', 'mos_fcf', PX.fmt0, '%'), kv('Intrinsic value (cash set)', 'iv_cash', PX.fmtP), kv('Margin of safety (cash)', 'mos_cash', PX.fmt0, '%'), kv('Debt/Equity', 'de', d3.format('.2f')),
+    kv('Sales growth', 'sales_g', PX.fmt1, '%'), kv('Profit growth', 'np_g', PX.fmt1, '%'), kv('Operating margin', 'op_margin', PX.fmt1, '%'), kv('Net margin', 'net_margin', PX.fmt1, '%'));
+  val.append(vg); right.append(val);
+
+  const tec = mk('div', 'px-card'); tec.append(mk('h2', null, 'Technical picture'));
+  // 52-week range bar
+  if (r.low_1y != null && r.high_1y != null && r.price != null) {
+    const W = 300, H = 34, x = d3.scaleLinear([r.low_1y, r.high_1y], [8, W - 8]).clamp(true);
+    const svg = d3.create('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    svg.append('line').attr('x1', 8).attr('x2', W - 8).attr('y1', 12).attr('y2', 12).style('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 6).attr('stroke-linecap', 'round');
+    [['support', 'var(--color-ok)'], ['resistance', 'var(--color-bad)'], ['sma200', 'var(--cds-chart-reference)']].forEach(([f, c]) => { if (r[f] != null) svg.append('line').attr('x1', x(r[f])).attr('x2', x(r[f])).attr('y1', 5).attr('y2', 19).attr('stroke', c).attr('stroke-width', 2); });
+    svg.append('circle').attr('cx', x(r.price)).attr('cy', 12).attr('r', 5).attr('fill', dash.colors[0]);
+    svg.append('text').attr('x', 8).attr('y', 32).style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text('1y low ' + PX.fmtP(r.low_1y));
+    svg.append('text').attr('x', W - 8).attr('y', 32).attr('text-anchor', 'end').style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text('1y high ' + PX.fmtP(r.high_1y));
+    const box = mk('div'); box.dataset.source = 'stocks'; box.append(svg.node()); tec.append(box);
+    tec.append(mk('p', 'muted', 'Dot = price · green = support · red = resistance · grey = 200-day average'));
+  }
+  const tg = mk('div', 'px-kv');
+  tg.append(kv('Trend', 'trend'), kv('20-day avg', 'sma20', PX.fmtP), kv('50-day avg', 'sma50', PX.fmtP), kv('200-day avg', 'sma200', PX.fmtP),
+    kv('RSI (14)', 'rsi', PX.fmt1), kv('MACD cross (5d)', 'macd_cross'), kv('MACD hist (% of price)', 'macd_hist_pct', d3.format('.2f')), kv('Support', 'support', PX.fmtP),
+    kv('Resistance', 'resistance', PX.fmtP), kv('Fibonacci leg', 'fib_leg'), kv('Fib retracement', 'fib_retrace_pct', PX.fmt1, '%'), kv('Candles (last 3 days)', 'candles'),
+    kv('Volume vs 20d avg', 'vol_ratio', d3.format('.2f'), '×'), kv('Beta vs KSE-100 proxy', 'beta', d3.format('.2f')), kv('Volatility (ann.)', 'volatility', PX.fmt1, '%'),
+    kv('Return 1M', 'ret_1m', PX.fmt1, '%'), kv('Return 3M', 'ret_3m', PX.fmt1, '%'), kv('Return 6M', 'ret_6m', PX.fmt1, '%'), kv('Return 1Y', 'ret_1y', PX.fmt1, '%'));
+  tec.append(tg);
+  tec.append(mk('h3', null, 'Technical course (CWT)'));
+  const cg = mk('div', 'px-kv');
+  cg.append(kv('Alligator (daily)', 'alligator_daily'), kv('Alligator (weekly)', 'alligator_weekly'), kv('CWT scenario', 'cwt_scenario'), kv('Weekly vs daily', 'timeframes'),
+    kv('Heikin-Ashi vs Lips', 'heikin_vs_lips'), kv('Jaw (stop line)', 'jaw', PX.fmtP), kv('Dow structure', 'dow_structure'), kv('RSI divergence', 'rsi_divergence'),
+    kv('Bullish fair value gap', 'fvg_bull'), kv('Support/resistance flip', 'sr_flip'), kv('Chart patterns', 'chart_patterns'), kv('Volume leader', 'volume_leader'),
+    kv('KSE-100 trend (daily)', 'kse100_trend'));
+  tec.append(cg);
+  tec.append(mk('h3', null, 'Trade plan from the chart'));
+  const tp = mk('div', 'px-kv');
+  tp.append(kv('Setup', 'setup'), kv('Entry', 'entry', PX.fmtP), kv('Stop', 'stop', PX.fmtP), kv('Target', 'target', PX.fmtP), kv('Reward : risk', 'reward_risk', d3.format('.2f')), kv('How to enter', 'entry_method'), kv('Pattern projection', 'pattern_target', PX.fmtP), kv('Shares for 1% risk', 'qty_for_risk', d3.format(',')));
+  tec.append(tp);
+  right.append(tec);
+  grid.append(right);
+  el.append(grid);
+});
+
+dash.draw('sizer', (el) => {
+  const ds = dash.data('stocks');
+  el.replaceChildren();
+  if (ds.status !== 'ok') return;
+  const r = ds.data.find((x) => x.sym === PX.sym) || ds.data[0];
+  const acct = +((document.querySelector('.px-acct') || {}).value || 0), risk = +((document.querySelector('.px-risk') || {}).value || 0);
+  const p = mk('p');
+  if (r.entry == null || r.stop == null || r.entry <= r.stop) {
+    p.append(document.createTextNode('No chart setup for ' + r.sym + ' right now, so there is no entry and stop to size from.'));
+    el.append(p); return;
+  }
+  const riskAmt = acct * risk / 100, per = r.entry - r.stop, shares = Math.floor(riskAmt / per);
+  p.append(document.createTextNode(r.sym + ': entry '), mark(mk('b', null, PX.fmtP(r.entry)), r.sym, 'entry'), document.createTextNode(', stop '), mark(mk('b', null, PX.fmtP(r.stop)), r.sym, 'stop'),
+    document.createTextNode(` → risk PKR ${d3.format(',.0f')(riskAmt)} at PKR ${d3.format(',.2f')(per)} a share = `), mk('b', null, d3.format(',')(shares) + ' shares'),
+    document.createTextNode(` (about PKR ${d3.format(',.0f')(shares * r.entry)} of capital, ${d3.format('.1f')(100 * shares * r.entry / (acct || 1))}% of the account).`));
+  el.append(p);
+});
+document.querySelectorAll('.px-acct, .px-risk').forEach((i) => i.addEventListener('input', () => dash.draw('sizer')));
+
+})();</script>
+
+<script>(function(){
+
+// Economy + method tables
+const PX = window.PX;
+// Alerts
+PX.atype = '';
+document.querySelectorAll('.px-atype').forEach((s) => s.addEventListener('change', () => { PX.atype = s.value; dash.draw('alertsBody'); }));
+document.querySelectorAll('.px-alerts').forEach((t) => t.addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-sym]'); if (tr && tr.dataset.sym !== '—') PX.open(tr.dataset.sym); }));
+dash.draw('alAsOf', (el) => { const m = dash.data('market'); el.textContent = m.status === 'ok' && m.data.length ? d3.utcFormat('%-d %b %Y')(new Date(m.data[0].as_of)) : '—'; });
+dash.draw('alertsBody', (tb) => {
+  const ds = dash.data('alerts'); tb.replaceChildren(); if (ds.status !== 'ok') return;
+  const hot = { 'Breakout triggered': 'good', 'Target hit': 'good', 'New strong candidate': 'good', 'Stop hit': 'bad', 'Lost strong status': 'bad' };
+  for (const r of ds.data.filter((x) => !PX.atype || x.type === PX.atype || (PX.atype && x.type.startsWith(PX.atype)))) {
+    const tr = document.createElement('tr'); tr.dataset.key = r.alert_id; tr.dataset.sym = r.sym;
+    [['date'], ['sym'], ['name'], ['type'], ['detail'], ['price', PX.fmtP]].forEach(([k, f]) => {
+      const td = document.createElement('td'); const v = r[k]; td.textContent = v == null ? '' : (f ? f(v) : v);
+      if (f) td.className = 'num'; if (k === 'type') td.className = hot[v] || ''; if (k === 'detail') td.className = 'wrapcell'; if (k === 'sym') td.style.fontWeight = '600';
+      tr.append(td);
+    });
+    tb.append(tr);
+  }
+});
+
+dash.draw('macroBody', (tb) => {
+  const ds = dash.data('macro'); tb.replaceChildren(); if (ds.status !== 'ok') return;
+  for (const r of ds.data) {
+    const tr = document.createElement('tr'); tr.dataset.key = r.indicator;
+    for (const k of ['indicator', 'latest', 'change', 'impact', 'note', 'source']) {
+      const td = document.createElement('td'); td.textContent = r[k] ?? '';
+      if (k === 'impact') td.className = r[k] === 'Positive' ? 'good' : r[k] === 'Negative' ? 'bad' : 'avg';
+      if (k === 'change' || k === 'note' || k === 'source') td.classList.add('wrapcell');
+      if (k === 'indicator') td.style.fontWeight = '600';
+      tr.append(td);
+    }
+    tb.append(tr);
+  }
+});
+// Allocation table from the course (Week 12 "Portfolio allocation by risk") – fixed references from the course
+const ALLOC = [
+  ['Dark green', 0, 100, 0, 'High risk'], ['Light green', 10, 80, 10, 'High risk'], ['Yellow', 20, 60, 20, 'High risk'], ['Red', 40, 20, 40, 'High risk'],
+  ['Dark green', 15, 70, 15, 'Low risk'], ['Light green', 25, 50, 25, 'Low risk'], ['Yellow', 30, 40, 30, 'Low risk'], ['Red', 50, 0, 50, 'Low risk']];
+dash.draw('alloc', (tb) => {
+  tb.replaceChildren();
+  for (const [z, b, s, gd, p] of ALLOC) {
+    const tr = document.createElement('tr');
+    [z, b + '%', s + '%', gd + '%', p].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i > 0 && i < 4) td.className = 'num'; if (z === 'Red') td.style.fontWeight = '600'; tr.append(td); });
+    tb.append(tr);
+  }
+});
+dash.draw('critBody', (tb) => {
+  const ds = dash.data('criteria'); tb.replaceChildren(); if (ds.status !== 'ok') return;
+  for (const r of ds.data) {
+    const tr = document.createElement('tr'); tr.dataset.key = String(r.no);
+    for (const k of ['no', 'category', 'indicator', 'good', 'applies_to_financials']) { const td = document.createElement('td'); td.textContent = r[k] ?? ''; tr.append(td); }
+    tb.append(tr);
+  }
+});
+
+})();</script>
+
+</div>
+<script>window.DASH_SHIM_START();</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+AABS|Al-Abbas Sugar Mills
+AATM|Ali Asghar Textile Mills
+ABL|Allied Bank
+ABOT|Abbott Laboratories (Pakistan)
+ACPL|Attock Cement Pakistan
+ADAMS|Adam Sugar Mills
+ADMM|Artistic Denim Mills
+AGHA|Agha Steel Industries
+AGIC|Askari General Insurance
+AGIL|Agriauto Industries
+AGL|Agritech
+AGP|AGP
+AGSML|Abdullah Shah Ghazi Sugar Mills
+AGTL|Al-Ghazi Tractors
+AHCL|Arif Habib Corporation
+AHL|Arif Habib
+AHTM|Ahmad Hassan Textile Mills
+AICL|Adamjee Insurance
+AIRLINK|Air Link Communication
+AKBL|Askari Bank
+AKDHL|AKD Hospitality
+AKDSL|AKD Securities
+ALAC|Askari Life Assurance
+ALIFE|Adamjee Life Assurance
+ALNRS|Al-Noor Sugar Mills
+ALTN|Altern Energy
+AMBL|Apna Microfinance Bank
+AMTEX|Amtex
+ANL|Azgard Nine
+ANLNV|Azgard Nine (Non-Voting)
+ANSM|Ansari Sugar Mills
+ANTM|AN Textile Mills
+APL|Attock Petroleum
+ARCTM|Arctic Textile Mills
+ARPL|Archroma Pakistan
+ASC|Al Shaheer Corporation
+ASHT|Ashfaq Textile Mills
+ASIC|Asia Insurance
+ASL|Aisha Steel Mills
+ASTL|Amreli Steels
+ASTM|Asim Textile Mills
+ATBA|Atlas Battery
+ATIL|Atlas Insurance
+ATLH|Atlas Honda
+ATRL|Attock Refinery
+AVN|Avanceon
+AWTX|Allawasaya Textile
+BAFL|Bank Alfalah
+BAFS|Baba Farid Sugar Mills
+BAHL|Bank AL Habib
+BATA|Bata Pakistan
+BBFL|Big Bird Foods
+BCL|Bolan Castings
+BECO|Beco Steel
+BELA|Bela Automotives
+BERG|Berger Paints Pakistan
+BFAGRO|Barkat Frisian Agro
+BFBIO|BF Biosciences
+BGL|Baluchistan Glass
+BHAT|Bhanero Textile Mills
+BIFO|Biafo Industries
+BIPL|BankIslami Pakistan
+BLUEX|Blue-Ex
+BML|Bank Makramah
+BNL|Bunnys
+BNWM|Bannu Woollen Mills
+BOK|The Bank of Khyber
+BOP|The Bank of Punjab
+BPL|Burshane LPG (Pakistan)
+BRRG|B.R.R Guardian
+BTL|Blessed Textiles
+BUXL|Buxly Paints
+BWCL|Bestway Cement
+BWHL|Baluchistan Wheels
+CCM|Crescent Cotton Mills
+CENI|Century Insurance
+CEPB|Century Paper & Board Mills
+CFL|Crescent Fibres
+CHAS|Chashma Sugar Mills
+CHCC|Cherat Cement
+CLOV|Clover Pakistan
+CLVL|Cordoba Logistics & Ventures
+CNERGY|Cnergyico PK
+COLG|Colgate-Palmolive (Pakistan)
+CPHL|Citi Pharma
+CPPL|Cherat Packaging
+CRTM|The Crescent Textile Mills
+CSAP|Crescent Steel & Allied Products
+CSIL|Crescent Star Insurance
+CTM|Colony Textile Mills
+DAAG|Data Agro
+DADX|Dadex Eternit
+DCL|Dewan Cement
+DCR|Dolmen City REIT
+DEL|Dawood Equities
+DFML|Dewan Farooque Motors
+DFSM|Dewan Farooque Spinning Mills
+DGKC|D.G. Khan Cement
+DIIL|Diamond Industries
+DINT|Din Textile Mills
+DLL|Dawood Lawrencepur
+DMC|D.M. Corporation
+DNCC|Dandot Cement
+DOL|Descon Oxychem
+DSIL|D.S. Industries
+DSL|Dost Steels
+DWAE|Dewan Automotive Engineering
+DWSM|Dewan Sugar Mills
+DWTM|Dewan Textile Mills
+DYNO|Dynea Pakistan
+ECOP|Ecopack
+EFERT|Engro Fertilizers
+EFUG|EFU General Insurance
+EFUL|EFU Life Assurance
+ELSM|Ellcot Spinning Mills
+EMCO|Emco Industries
+ENGROH|Engro Holdings
+EPCL|Engro Polymer & Chemicals
+EPQL|Engro Powergen Qadirpur
+ESBL|Escorts Investment Bank
+EWIC|East West Insurance
+EXIDE|Exide Pakistan
+FABL|Faysal Bank
+FASM|Faisal Spinning Mills
+FATIMA|Fatima Fertilizer
+FCCL|Fauji Cement
+FCEPL|FrieslandCampina Engro Pakistan
+FCIBL|First Credit and Investment Bank
+FCL|Fast Cables
+FCSC|First Capital Securities
+FDPL|First Dawood Properties
+FECTC|Fecto Cement
+FEROZ|Ferozsons Laboratories
+FFC|Fauji Fertilizer Company
+FFL|Fauji Foods
+FHAM|First Habib Modaraba
+FLYNG|Flying Cement
+FML|Feroze1888 Mills
+FNEL|First National Equities
+FRCL|Frontier Ceramics
+FRSM|Faran Sugar Mills
+FTMM|First Treet Manufacturing Modaraba
+FZCM|Fazal Cloth Mills
+GADT|Gadoon Textile Mills
+GAL|Ghandhara Automobiles
+GATI|Gatron (Industries)
+GATM|Gul Ahmed Textile Mills
+GCIL|Ghani Chemical Industries
+GCWL|Ghani Chemworld
+GDL|Ghani Dairies
+GEMBCEM|Burj Clean Energy Modaraba
+GEMMEL|Mughal Energy
+GEMNETS|Nets International Communication
+GEMPACRA|Pakistan Credit Rating Agency
+GFIL|Ghazi Fabrics International
+GGGL|Ghani Global Glass
+GGL|Ghani Global Holdings
+GHGL|Ghani Glass
+GHNI|Ghandhara Industries
+GIL|Good Luck Industries
+GLAXO|GlaxoSmithKline Pakistan
+GOC|GOC (Pak)
+GRR|Globe Residency REIT
+GRYL|Grays Leasing
+GTYR|Ghandhara Tyre & Rubber
+GVGL|Ghani Value Glass
+GWLC|Gharibwal Cement
+HABSM|Habib Sugar Mills
+HAFL|Hafiz
+HALEON|Haleon Pakistan
+HASCOL|Hascol Petroleum
+HBL|Habib Bank
+HCAR|Honda Atlas Cars (Pakistan)
+HICL|Habib Insurance
+HINO|Hinopak Motors
+HINOON|Highnoon Laboratories
+HMB|Habib Metropolitan Bank
+HPL|Hoechst Pakistan
+HRPL|Habib Rice Product
+HTL|Hi-Tech Lubricants
+HUBC|The Hub Power Company
+HUMNL|Hum Network
+HUSI|Husein Industries
+HWQS|Haseeb Waqas Sugar Mills
+IBFL|Ibrahim Fibres
+IBLHL|IBL HealthCare
+ICIBL|Invest Capital Investment Bank
+ICL|Ittehad Chemicals
+IDRT|Idrees Textile Mills
+IDYM|Indus Dyeing & Manufacturing
+IGIHL|IGI Holdings
+IGIL|IGI Life Insurance
+ILP|Interloop
+IMAGE|Image Pakistan
+IML|Imperial
+IMS|Intermarket Securities
+INDU|Indus Motor Company
+INIL|International Industries
+INKL|International Knitwear
+IPAK|International Packaging Films
+IREIT|Image REIT
+ISIL|Ismail Industries
+ISL|International Steels
+ITANZ|Itanz Technologies
+ITTEFAQ|Ittefaq Iron Industries
+JATM|J.A. Textile Mills
+JDMT|Janana De Malucho Textile Mills
+JDWS|JDW Sugar Mills
+JGICL|Jubilee General Insurance
+JKSM|J.K. Spinning Mills
+JLICL|Jubilee Life Insurance
+JSBL|JS Bank
+JSCL|Jahangir Siddiqui & Co.
+JSGCL|JS Global Capital
+JSIL|JS Investments
+JSML|Jauharabad Sugar Mills
+JSRR|JS Rental REIT
+JUBS|Jubilee Spinning & Weaving Mills
+JVDC|Javedan Corporation
+KAPCO|Kot Addu Power Company
+KCL|Karam Ceramics
+KEL|K-Electric
+KHTC|Khyber Tobacco
+KHYT|Khyber Textile Mills
+KML|Kohinoor Mills
+KOHC|Kohat Cement
+KOHE|Kohinoor Energy
+KOHTM|Kohat Textile Mills
+KOIL|Kohinoor Industries
+KOSM|Kohinoor Spinning Mills
+KPUS|Khairpur Sugar Mills
+KSBP|KSB Pumps
+KTML|Kohinoor Textile Mills
+LCI|Lucky Core Industries
+LIVEN|Liven Pharma
+LOADS|Loads
+LOTCHEM|Lotte Chemical Pakistan
+LPL|Lalpir Power
+LSECL|LSE Capital
+LSEFSL|LSE Financial Services
+LSEVL|LSE Ventures
+LUCK|Lucky Cement
+MACFL|MACPAC Films
+MACTER|Macter International
+MARI|Mari Energies
+MCB|MCB Bank
+MCBIM|MCB Investment Management
+MDTL|Media Times
+MEBL|Meezan Bank
+MEHT|Mehmood Textile Mills
+MERIT|Merit Packaging
+MFFL|Mitchells Fruit Farms
+MFL|Matco Foods
+MIRKS|Mirpurkhas Sugar Mills
+MLCF|Maple Leaf Cement
+MQTM|Maqbool Textile Mills
+MRNS|Mehran Sugar Mills
+MSCL|Metropolitan Steel
+MSOT|Masood Textile Mills
+MTL|Millat Tractors
+MUGHAL|Mughal Iron & Steel
+MUGHALC|Mughal Iron & Steel (C)
+MUREB|Murree Brewery
+MWMP|Mandviwala Mauser Plastic
+NAGC|Nagina Cotton Mills
+NATF|National Foods
+NATM|Nadeem Textile Mills
+NBP|National Bank of Pakistan
+NCL|Nishat Chunian
+NCPL|Nishat Chunian Power
+NESTLE|Nestle Pakistan
+NETSOL|NetSol Technologies
+NEXT|Next Capital
+NICL|Nimir Industrial Chemicals
+NML|Nishat Mills
+NNAR|Naya Nazimabad Apartment REIT
+NONS|Noon Sugar Mills
+NPL|Nishat Power
+NRL|National Refinery
+NRSL|Nimir Resins
+NSRM|National Silk & Rayon Mills
+OBOY|Oilboy Energy
+OCTOPUS|Octopus Digital
+OGDC|Oil & Gas Development Company
+OLPL|OLP Financial Services
+OLPM|OLP Modaraba
+ORM|Orient Rental Modaraba
+OTSU|Otsuka Pakistan
+PABC|Pakistan Aluminium Beverage Cans
+PACE|Pace (Pakistan)
+PAEL|Pak Elektron
+PAKD|Pak Datacom
+PAKOXY|Pakistan Oxygen
+PAKQATAR|Pak Qatar Family Takaful
+PAKRI|Pakistan Reinsurance
+PAKT|Pakistan Tobacco
+PASL|Pervez Ahmed Consultancy
+PCAL|Pakistan Cables
+PECO|Pakistan Engineering
+PGLC|Pak-Gulf Leasing
+PHDL|Pakistan Hotels Developers
+PIAHCLA|PIA Holding Company A
+PIAHCLB|PIA Holding Company B
+PIBTL|Pakistan International Bulk Terminal
+PICT|Pakistan International Container
+PIM|Popular Islamic Modaraba
+PINL|Premier Insurance
+PIOC|Pioneer Cement
+PKGI|Pakistan General Insurance
+PKGP|Pakgen Power
+PKGS|Packages
+PMRS|Premier Sugar Mills
+PNSC|Pakistan National Shipping
+POL|Pakistan Oilfields
+POML|Punjab Oil Mills
+POWER|Power Cement
+PPL|Pakistan Petroleum
+PPP|Pakistan Paper Products
+PQGTL|Pak Qatar General Takaful
+PREMA|At-Tahur
+PRET|Premium Textile Mills
+PRL|Pakistan Refinery
+PSEL|Pakistan Services
+PSO|Pakistan State Oil
+PSX|Pakistan Stock Exchange
+PSYL|Pakistan Synthetics
+PTC|Pakistan Telecommunication
+PTL|Panther Tyres
+QTECH|Quantum Data Technologies
+QUICE|Quice Food Industries
+REDCO|Redco Textiles
+REWM|Reliance Weaving Mills
+RICL|Reliance Insurance
+RMPL|Rafhan Maize Products
+RPL|Roshan Packages
+RUBY|Ruby Textile Mills
+RUPL|Rupali Polyester
+SANSM|Sanghar Sugar Mills
+SAPT|Sapphire Textile Mills
+SASML|Sindh Abadgars Sugar Mills
+SAZEW|Sazgar Engineering Works
+SBL|Samba Bank
+SCBPL|Standard Chartered Bank (Pak)
+SEARL|The Searle Company
+SEL|Sitara Energy
+SELECT|Select Technologies
+SEPL|Security Papers
+SFL|Sapphire Fibres
+SGABL|SG Allied Businesses
+SGF|Service Global Footwear
+SHCM|Shadman Cotton Mills
+SHEZ|Shezan International
+SHFA|Shifa International Hospitals
+SHJS|Shahtaj Sugar Mills
+SHNI|Shaheen Insurance
+SHSML|Shahmurad Sugar Mills
+SIEM|Siemens (Pakistan) Engineering
+SINDM|Sindh Modaraba
+SITC|Sitara Chemical Industries
+SKRS|Sakrand Sugar Mills
+SLGL|Secure Logistics-Trax Group
+SLM|Service Long March Tyres
+SMCPL|Safe Mix Concrete
+SML|Shakarganj
+SNAI|Sana Industries
+SNBL|Soneri Bank
+SNGP|Sui Northern Gas Pipelines
+SOYASUP|Agro Processors & Atmospheric Gases
+SPAC2|LSE SPAC-II
+SPEL|SPEL
+SPL|Sitara Peroxide
+SPSL|Sitara Petroleum Service
+SPWL|Saif Power
+SRVI|Service Industries
+SSGC|Sui Southern Gas
+SSML|Saritow Spinning Mills
+SSOM|S.S. Oil Mills
+STCL|Shabbir Tiles & Ceramics
+STJT|Shahtaj Textile
+STL|Supernet Technologies
+STPL|Siddiqsons Tin Plate
+STYLERS|Stylers International
+SURC|Suraj Cotton Mills
+SUTM|Sunrays Textile Mills
+SYM|Symmetry Group
+SYS|Systems
+SZTM|Shahzad Textile Mills
+TATM|Tata Textile Mills
+TBL|Treet Battery
+TCORP|Tariq Corporation
+TELE|Telecard
+TGL|Tariq Glass Industries
+THALL|Thal
+THCCL|Thatta Cement
+TICL|Thal Industries Corporation
+TISL|Tasdeeq Information Services
+TOMCL|The Organic Meat Company
+TOWL|Towellers
+TPL|TPL Corp
+TPLI|TPL Insurance
+TPLL|TPL Life Insurance
+TPLP|TPL Properties
+TPLT|TPL Trakker
+TREET|Treet Corporation
+TRG|TRG Pakistan
+TRIPF|Tri-Pack Films
+TSBL|Trust Securities & Brokerage
+TSML|Tandlianwala Sugar Mills
+UBDL|United Brands
+UBL|United Bank
+UDLI|UDL International
+UDPL|United Distributors Pakistan
+UNIC|The United Insurance Company
+UNITY|Unity Foods
+UPFL|Unilever Pakistan Foods
+UVIC|Universal Insurance
+WAFI|Wafi Energy Pakistan
+WAHDAT|Wahdat Poultry Farm
+WAHN|Wah Noble Chemicals
+WASL|Wasl Mobility Modaraba
+WAVES|Waves Corporation
+WAVESAPP|Waves Home Appliances
+WTL|Worldcall Telecom
+ZAHID|Zahidjee Textile Mills
+ZAL|Zarea
+ZIL|ZIL
+ZTL|Zephyr Textiles
+ZUMA|Zuma Resources
+786|786 Investments
+FIBLM|First IBL Modaraba
+FFLM|First Fidelity Leasing Modaraba
+ELCM|Elahi Cotton Mills
+KOHP|Kohinoor Power Company
+PPVC|Pakistan PVC
+FANM|First Al-Noor Modaraba
+GEMPAPL|Pak Agro Packaging
+FECM|First Elite Capital Modaraba
+TSPL|Tri-Star Power
+GSPM|Gulshan Spinning Mills
+QUET|Quetta Textile Mills
+BFMOD|B.F. Modaraba
+PIL|PICIC Insurance
+PAKL|Pak Leather Crafts
+FPRM|First Paramount Modaraba
+PASM|Paramount Spinning Mills
+BAPL|Bawany Air Products
+KSTM|Khalid Siraj Textile Mills
+SLYT|Sally Textile Mills
+GUSM|Gulistan Spinning Mills
+ARUJ|Aruj Industries
+DMTM|Dewan Mushtaq Textile Mills
+SLL|SME Leasing
+SPCL|Saudi Pak Consultancy
+SANE|Salman Noman Enterprises

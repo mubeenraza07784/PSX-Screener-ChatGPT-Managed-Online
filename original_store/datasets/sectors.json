@@ -1,0 +1,15 @@
+{
+  "description": "Average fundamental and technical score and median 3-month return per PSX sector, from the company scores.",
+  "schedule": "Every weekday after the PSX close (scheduled task)",
+  "source": {
+    "kind": "file",
+    "name": "sectors.json",
+    "url": "/_blob/4007125e9cc34a91efcb921bc7de93fd"
+  },
+  "staleAfterHours": 96,
+  "title": "Sector averages",
+  "updated": {
+    "at": "2026-10-29T07:06:00Z",
+    "by": "PSX monitor"
+  }
+}

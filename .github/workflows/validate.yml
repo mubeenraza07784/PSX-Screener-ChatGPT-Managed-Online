@@ -1,0 +1,30 @@
+name: Validate PSX screener
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Parse Python and check snapshot
+        run: |
+          python -m compileall -q engine monitor collector dashboard cloud streamlit_app.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('stocks','strategies','strategy_rules','sectors','market','alerts','macro','criteria'):
+              data=json.loads((Path('data/current')/(name+'.json')).read_text(encoding='utf-8'))
+              assert isinstance(data,list),name
+              print(name,len(data))
+          html=Path('dashboard/psx-screener-single-file.html').read_text(encoding='utf-8')
+          assert 'window.PSX_DATA' in html and 'PSX strategy screener' in html
+          print('Validated embedded browser dashboard')
+          PY

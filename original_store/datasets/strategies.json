@@ -1,0 +1,15 @@
+{
+  "description": "Companies selected by each strategy (Week 12 Strategies 1–5, technical course Strategy 6, Strategies 7–9 from Sir Ammar's and Sir Faraz's sessions) plus the holdings check of your holdings and watchlist, computed from the company scores.",
+  "schedule": "Every weekday after the PSX close (scheduled task)",
+  "source": {
+    "kind": "file",
+    "name": "strategies.json",
+    "url": "/_blob/6eeb4592fcdd573e7ff6d4c9c16c7c64"
+  },
+  "staleAfterHours": 96,
+  "title": "Strategy picks and holdings check",
+  "updated": {
+    "at": "2026-10-29T07:06:00Z",
+    "by": "PSX monitor"
+  }
+}

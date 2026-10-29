@@ -1,0 +1,23 @@
+{
+  "_note": "Reference copy of the positions the bot used (from the 27 Oct 2026 broker screenshot). The engine's holdings check reads the HOLD/WATCH lists in engine/analyze.py, engine/build_ds.py and monitor/report.py; quantities and costs were used only by the separate web-search P/L monitor (docs/original_scheduled_task_prompts/4_portfolio_pnl_monitor.md). Update all of them when you trade.",
+  "capital_pkr": 376000,
+  "risk_per_trade_pct": 1.0,
+  "holdings": [
+    {"sym": "ABOT",   "qty": 41,  "avg_buy": 928.68,  "haircut_pct": 22.5},
+    {"sym": "COLG",   "qty": 34,  "avg_buy": 1109.98, "haircut_pct": 15},
+    {"sym": "DCR",    "qty": 961, "avg_buy": 41.00,   "haircut_pct": 15},
+    {"sym": "ENGROH", "qty": 154, "avg_buy": 235.75,  "haircut_pct": 15},
+    {"sym": "FFC",    "qty": 71,  "avg_buy": 451.76,  "haircut_pct": 17.5},
+    {"sym": "HUBC",   "qty": 147, "avg_buy": 188.89,  "haircut_pct": 15},
+    {"sym": "LUCK",   "qty": 49,  "avg_buy": 384.32,  "haircut_pct": 15},
+    {"sym": "MARI",   "qty": 50,  "avg_buy": 625.50,  "haircut_pct": 15},
+    {"sym": "MEBL",   "qty": 66,  "avg_buy": 484.75,  "haircut_pct": 15},
+    {"sym": "MTL",    "qty": 136, "avg_buy": 278.89,  "haircut_pct": 15},
+    {"sym": "OGDC",   "qty": 63,  "avg_buy": 249.51,  "haircut_pct": 15}
+  ],
+  "watchlist": ["SAZEW", "GHNI"],
+  "watch_levels_28_oct_2026": {
+    "SAZEW": {"support": "1388-1405", "resistance_1": "1450-1455", "resistance_2": "1510-1550", "valuation_zone": "1070-1335"},
+    "GHNI":  {"pre_jump_level": 965, "pe6x": 975, "pe5x": 813, "range_52w": "590-1371.99"}
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "description": "The 33 Good/Average/Bad criteria from your Drive file Financial_Ratio_Summary – All Criteria.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "criteria.json",
+    "url": "/_blob/cb5f21b3f8b026a5875ed39a759694a6"
+  },
+  "title": "Course ratio criteria",
+  "updated": {
+    "at": "2026-10-28T07:30:00Z",
+    "by": "Claude"
+  }
+}

@@ -1,0 +1,63 @@
+/* theme.css — stand-ins for the design tokens the Claude Dashboard runtime provides.
+   The original page only uses these CSS variables; change them to restyle it. */
+:root {
+  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+
+  --color-fg: #1f1e1c;
+  --color-fg-muted: #6b6963;
+  --color-bg: #faf9f7;
+  --color-panel: #ffffff;
+  --color-border-line: #e4e2dc;
+  --color-ok: #15803d;
+  --color-warn: #b45309;
+  --color-bad: #b91c1c;
+
+  --cds-border: #e4e2dc;
+  --cds-chart-axis: #8a877f;
+  --cds-chart-grid: #ecebe6;
+  --cds-chart-muted: #b9b6ad;
+  --cds-chart-reference: #8a877f;
+  --cds-surface-popover: #ffffff;
+  --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .12);
+  --cds-text-secondary: #6b6963;
+
+  --cds-font-size-caption: 12.5px;
+  --cds-font-size-body: 14.5px;
+  --cds-font-size-heading: 17px;
+  --cds-font-size-title: 26px;
+  --cds-font-weight-medium: 550;
+
+  --cds-gap-xs: 6px;
+  --cds-gap-sm: 10px;
+  --cds-gap-md: 16px;
+  --cds-pad-xs: 4px;
+  --cds-pad-sm: 8px;
+  --cds-pad-md: 12px;
+  --cds-pad-lg: 18px;
+  --cds-radius: 8px;
+  --cds-dur-slow: 300ms;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fg: #ecebe6;
+    --color-fg-muted: #a3a097;
+    --color-bg: #1c1b19;
+    --color-panel: #262522;
+    --color-border-line: #3a3935;
+    --color-ok: #4ade80;
+    --color-warn: #fbbf24;
+    --color-bad: #f87171;
+    --cds-border: #3a3935;
+    --cds-chart-axis: #8a877f;
+    --cds-chart-grid: #33322e;
+    --cds-chart-muted: #6b6963;
+    --cds-chart-reference: #a3a097;
+    --cds-surface-popover: #2e2d29;
+    --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .5);
+    --cds-text-secondary: #a3a097;
+  }
+}
+html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-body); }
+#dash-root { max-width: 1400px; margin: 0 auto; padding: 16px var(--dash-gutter, 18px) 48px; box-sizing: border-box; }
+.export-banner { font-size: 12.5px; color: var(--color-fg-muted); border-bottom: 1px solid var(--color-border-line); padding: 8px 16px; text-align: center; }
