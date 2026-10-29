@@ -1,9 +1,20 @@
-name: Refresh PSX data (cloud)
+name: Refresh PSX data (approved import)
+
 on:
-  # Manually test a fresh data collection before enabling automated schedules.
   workflow_dispatch:
-  schedule:
-    - cron: '43 12 * * 1-5'  # 17:43 PKT, Monday-Friday, after market close
+    inputs:
+      mode:
+        description: "Check saved engine, or import a complete authorized feature snapshot?"
+        required: true
+        type: choice
+        default: validate_only
+        options:
+          - validate_only
+          - import_approved
+
+# No scheduled scraping: the former Playwright/StockAnalysis cloud job
+# received a bot verification challenge in GitHub-hosted browsers.
+# Add a licensed provider adapter and test freshness before scheduling updates.
 permissions:
   contents: write
 concurrency:
@@ -11,31 +22,31 @@ concurrency:
   cancel-in-progress: false
 jobs:
   daily:
-    # Repository variable PSX_ENABLE_SCHEDULED_REFRESH must be 'true' for scheduled runs.
-    if: github.event_name == 'workflow_dispatch' || vars.PSX_ENABLE_SCHEDULED_REFRESH == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 85
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - name: Install Playwright Chromium (may be blocked by source providers)
+      - name: Validate original calculation engine (historical data ONLY)
+        if: github.event.inputs.mode == 'validate_only'
         run: |
-          python -m pip install -r requirements.txt
-          python -m playwright install --with-deps chromium
-      - name: Collect data and recompute engine using fixed alerts
-        run: python monitor/refresh_daily.py --headless --fixed-alerts
-      - name: Reject partial or stale source data
-        run: python cloud/verify_freshness.py
-      - name: Commit only a verified fresh snapshot
+          python -m compileall -q engine monitor cloud dashboard streamlit_app.py
+          python monitor/refresh_daily.py --skip-collect --fixed-alerts
+          echo 'VALIDATION COMPLETE: original saved snapshot, NOT fresh trading data. Nothing is published.'
+      - name: Import permitted source and recompute the complete screener
+        if: github.event.inputs.mode == 'import_approved'
+        run: python cloud/import_approved.py
+      - name: Publish only after import AND same-day freshness gate passed
+        if: github.event.inputs.mode == 'import_approved'
         run: |
           git config user.name 'psx-refresh-bot'
           git config user.email 'psx-refresh-bot@users.noreply.github.com'
           git add data/current dashboard/data.js dashboard/standalone.html dashboard/psx-screener-single-file.html workdir reports
           if ! git diff --cached --quiet; then
-            git commit -m 'Update PSX screener snapshot after fresh data verification'
+            git commit -m 'Publish PSX snapshot from authorized input'
             git push
           fi

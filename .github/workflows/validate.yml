@@ -10,13 +10,14 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
       - name: Parse Python and check snapshot
         run: |
           python -m compileall -q engine monitor collector dashboard cloud streamlit_app.py
+          python -m unittest discover -s tests -v
           python - <<'PY'
           import json
           from pathlib import Path
